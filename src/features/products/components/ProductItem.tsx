@@ -10,6 +10,7 @@ interface Props {
   title: string;
   price: number;
   image: string | null;
+  category: string;
 }
 
 const ImageCardMedia = styled(CardMedia)({
@@ -17,7 +18,7 @@ const ImageCardMedia = styled(CardMedia)({
   paddingTop: '56.25%' //16:9
 });
 
-const ProductItem: React.FC<Props> = ({id, title, price, image}) => {
+const ProductItem: React.FC<Props> = ({id, title, price, image, category}) => {
   let cardImage = imageNotAvailable;
 
   if (image) {
@@ -31,6 +32,9 @@ const ProductItem: React.FC<Props> = ({id, title, price, image}) => {
         <CardHeader title={title} />
         <ImageCardMedia image={cardImage} title={title} />
         <CardContent>
+          <p>
+            <strong>Category: {category}</strong>
+          </p>
           <strong>{price} KGS</strong>
         </CardContent>
         <CardActions>

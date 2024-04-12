@@ -1,18 +1,28 @@
-import React, { useState } from 'react';
-import { Button, Grid, TextField } from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import {Button, Grid, MenuItem, TextField} from '@mui/material';
 import { ProductMutation } from '../../../types';
 import FileInput from "../../../components/UI/FileInput/FileInput.tsx";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
+import {selectCategories} from "../../categories/categoriesSlice.ts";
+import {fetchCategories} from "../../categories/categoriesThunk.ts";
 
 interface Props {
   onSubmit: (mutation: ProductMutation) => void;
 }
 const ProductForm: React.FC<Props> = ({onSubmit}) => {
+  const dispatch = useAppDispatch();
+  const categories = useAppSelector(selectCategories);
   const [state, setState] = useState<ProductMutation>({
+    category: '',
     title: '',
     price: '',
     description: '',
     image: null,
   });
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const submitFormHandler = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +53,26 @@ const ProductForm: React.FC<Props> = ({onSubmit}) => {
       onSubmit={submitFormHandler}
     >
       <Grid container direction="column" spacing={2}>
+        <Grid item xs>
+          <TextField
+              select
+              id="category" label="Category"
+              value={state.category}
+              onChange={inputChangeHandler}
+              name="category"
+              required
+          >
+            <MenuItem value="" disabled>Please select a category</MenuItem>
+            {categories.map(category => (
+                <MenuItem
+                    key={category._id}
+                    value={category._id}
+                >
+                  {category.title}
+                </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
         <Grid item xs>
           <TextField
               id="title" label="Title"
