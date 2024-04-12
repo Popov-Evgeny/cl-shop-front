@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
 import { ProductMutation } from '../../../types';
+import FileInput from "../../../components/UI/FileInput/FileInput.tsx";
 
 interface Props {
   onSubmit: (mutation: ProductMutation) => void;
@@ -9,7 +10,8 @@ const ProductForm: React.FC<Props> = ({onSubmit}) => {
   const [state, setState] = useState<ProductMutation>({
     title: '',
     price: '',
-    description: ''
+    description: '',
+    image: null,
   });
 
   const submitFormHandler = (e: React.FormEvent) => {
@@ -25,6 +27,16 @@ const ProductForm: React.FC<Props> = ({onSubmit}) => {
     });
   };
 
+  const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, files} = e.target;
+    if (files) {
+      setState(prevState => ({
+        ...prevState,
+        [name]: files[0],
+      }));
+    }
+  };
+
   return (
     <form
       autoComplete="off"
@@ -33,29 +45,37 @@ const ProductForm: React.FC<Props> = ({onSubmit}) => {
       <Grid container direction="column" spacing={2}>
         <Grid item xs>
           <TextField
-            id="title" label="Title"
-            value={state.title}
-            onChange={inputChangeHandler}
-            name="title"
+              id="title" label="Title"
+              value={state.title}
+              onChange={inputChangeHandler}
+              name="title"
           />
         </Grid>
 
         <Grid item xs>
           <TextField
-            id="price" label="Price"
-            value={state.price}
-            onChange={inputChangeHandler}
-            name="price"
+              id="price" label="Price"
+              value={state.price}
+              onChange={inputChangeHandler}
+              name="price"
           />
         </Grid>
 
         <Grid item xs>
           <TextField
-            multiline rows={3}
-            id="description" label="Description"
-            value={state.description}
-            onChange={inputChangeHandler}
-            name="description"
+              multiline rows={3}
+              id="description" label="Description"
+              value={state.description}
+              onChange={inputChangeHandler}
+              name="description"
+          />
+        </Grid>
+
+        <Grid item xs>
+          <FileInput
+              onChange={fileInputChangeHandler}
+              name="image"
+              label="Image"
           />
         </Grid>
 
