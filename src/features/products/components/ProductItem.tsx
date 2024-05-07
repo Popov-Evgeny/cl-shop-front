@@ -27,7 +27,7 @@ const ProductItem: React.FC<Props> = ({id, title, price, image, category}) => {
 
 
   return (
-    <Grid item xs md={4} lg={3}>
+    <Grid item xs={12} sm={12} md={6} lg={4} gap={2}>
       <Card>
         <CardHeader title={title} />
         <ImageCardMedia image={cardImage} title={title} />
