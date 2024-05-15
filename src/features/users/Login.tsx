@@ -5,7 +5,8 @@ import {Alert, Avatar, Box, Button, Container, Grid, Link, TextField, Typography
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
 import {selectLoginError} from "./usersSlice.ts";
-import {login} from "./usersThunk.ts";
+import {googleLogin, login} from "./usersThunk.ts";
+import {GoogleLogin} from "@react-oauth/google";
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -13,7 +14,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const [state, setState] = useState<LoginMutation>({
-        username: '',
+        email: '',
         password: '',
     });
 
@@ -23,6 +24,11 @@ const Login = () => {
             return {...prevState, [name]: value};
         });
     };
+
+    const googleLoginHandler = async (credential: string) => {
+        await dispatch(googleLogin(credential)).unwrap();
+        navigate('/');
+    }
 
     const submitFormHandler = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -50,14 +56,26 @@ const Login = () => {
                 {error && (
                     <Alert severity="error" sx={{mt: 5, width: '100%'}}>{error.error}</Alert>
                 )}
+                <Box sx={{pt: 2}}>
+                    <GoogleLogin
+                        onSuccess={(credentialResponse) => {
+                            if (credentialResponse.credential) {
+                                void googleLoginHandler(credentialResponse.credential);
+                            }
+                        }}
+                        onError={() => {
+                            console.log('Login error');
+                        }}
+                    />
+                </Box>
                 <Box component="form" onSubmit={submitFormHandler} sx={{mt: 3}}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
-                                label="Username"
-                                name="username"
-                                autoComplete="new-username"
-                                value={state.username}
+                                label="E-mail"
+                                name="email"
+                                autoComplete="new-email"
+                                value={state.email}
                                 onChange={inputChangeHandler}
                             />
                         </Grid>
