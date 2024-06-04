@@ -1,32 +1,21 @@
-import React, {useState} from 'react';
+import React, {useRef} from 'react';
 import {Button, Grid, TextField} from "@mui/material";
-import {useRef} from "react";
 
 interface Props {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onClear?: () => void;
     name: string;
     label: string;
+    fileName?: string;
 }
 
-const FileInput: React.FC<Props> = ({onChange, name, label}) => {
+const FileInput: React.FC<Props> = ({onChange, onClear, name, label, fileName}) => {
     const inputRef = useRef<HTMLInputElement>(null);
-
-    const [fileName, setFileName] = useState('');
 
     const activateInput = () => {
         if (inputRef.current) {
             inputRef.current.click();
         }
-    }
-
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFileName(e.target.files[0].name);
-        } else {
-            setFileName('');
-        }
-
-        onChange(e);
     }
 
     return (
@@ -35,7 +24,7 @@ const FileInput: React.FC<Props> = ({onChange, name, label}) => {
                 style={{display: 'none'}}
                 type="file"
                 name={name}
-                onChange={onFileChange}
+                onChange={onChange}
                 ref={inputRef}
             />
             <Grid container direction="row" spacing={2} alignItems="center">
@@ -43,9 +32,18 @@ const FileInput: React.FC<Props> = ({onChange, name, label}) => {
                     <TextField
                         disabled
                         label={label}
-                        value={fileName}
+                        value={fileName || ''}
+                        onClick={activateInput}
                     />
                 </Grid>
+                {onClear && (
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            onClick={onClear}
+                        >Clear</Button>
+                    </Grid>
+                )}
                 <Grid item>
                     <Button
                         variant="contained"

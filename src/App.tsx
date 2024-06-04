@@ -8,6 +8,7 @@ import Login from "./features/users/Login.tsx";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
 import {useAppSelector} from "./app/hooks.ts";
 import {selectUser} from "./features/users/usersSlice.ts";
+import EditProduct from "./features/products/EditProduct.tsx";
 
 function App() {
     const user = useAppSelector(selectUser);
@@ -24,6 +25,11 @@ function App() {
                         <Route path="/products/new" element={
                             <ProtectedRoute isAllowed={user && user.role === 'admin'}>
                                 <NewProduct/>
+                            </ProtectedRoute>
+                        }/>
+                        <Route path="/products/:id/edit" element={
+                            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+                                <EditProduct/>
                             </ProtectedRoute>
                         }/>
                         <Route path="/register" element={<Register/>}/>

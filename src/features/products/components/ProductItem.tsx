@@ -1,9 +1,11 @@
 import React from 'react';
-import {Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, styled} from '@mui/material';
+import {Button, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, styled} from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import imageNotAvailable from '../../../../assets/imageNotAvailable.png';
 import {apiURL} from "../../../constants.ts";
+import {useAppSelector} from "../../../app/hooks.ts";
+import {selectUser} from "../../users/usersSlice.ts";
 
 interface Props {
   id: string;
@@ -19,6 +21,7 @@ const ImageCardMedia = styled(CardMedia)({
 });
 
 const ProductItem: React.FC<Props> = ({id, title, price, image, category}) => {
+  const user = useAppSelector(selectUser);
   let cardImage = imageNotAvailable;
 
   if (image) {
@@ -38,9 +41,16 @@ const ProductItem: React.FC<Props> = ({id, title, price, image, category}) => {
           <strong>{price} KGS</strong>
         </CardContent>
         <CardActions>
-          <IconButton component={Link} to={`/products/${id}`}>
-            <ArrowForwardIcon/>
-          </IconButton>
+          <Grid item>
+            <IconButton component={Link} to={`/products/${id}`}>
+              <ArrowForwardIcon/>
+            </IconButton>
+          </Grid>
+          <Grid item>
+            { user?.role === 'admin' && (
+                <Button component={Link} to={`/products/${id}/edit`}>Edit</Button>
+            )}
+          </Grid>
         </CardActions>
       </Card>
     </Grid>

@@ -13,6 +13,12 @@ export interface ProductMutation {
     description: string;
     price: string;
     image: File | null;
+    isDeletedImage:'delete' | null;
+}
+
+export interface UpdateProductArg {
+    productId: string;
+    productMutation: ProductMutation;
 }
 
 export interface Category {
